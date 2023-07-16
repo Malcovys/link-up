@@ -9,12 +9,27 @@ from absences.models import Timetable
 from absences.models import Absence
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'matricule', 'group', 'number')
+    list_display = ('name', 'matricule', 'group', 'number', 'user')
 
-admin.site.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user')
+
+class TeacherModuleAdmin(admin.ModelAdmin):
+    list_display = ('module', 'teacher', 'group')
+
+class TimetableAdmin(admin.ModelAdmin):
+    list_display = ('course','id', 'date', 'time_begin', 'time_ending')
+
+class AbsenceAdmin(admin.ModelAdmin):
+    list_display = ('student', 'course_id', 'getDate')
+
+    def getDate(self, Timetable):
+        return Timetable.course.date
+
+admin.site.register(Teacher, TeacherAdmin)
 admin.site.register(Module)
 admin.site.register(Group)
 admin.site.register(Student, StudentAdmin)
-admin.site.register(TeacherModule)
-admin.site.register(Absence)
-admin.site.register(Timetable)
+admin.site.register(TeacherModule, TeacherModuleAdmin)
+admin.site.register(Absence, AbsenceAdmin)
+admin.site.register(Timetable, TimetableAdmin)
