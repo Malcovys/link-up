@@ -40,7 +40,7 @@ class StudentAuthView(APIView):
         auth_result = auth(username=username, password=password)
 
         if not auth_result['state']:
-            return Response({'message': auth_result['message']}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         user = auth_result.get('user')
         student = self.getStudent(user.id)
@@ -63,7 +63,7 @@ class TeacherAuthView(APIView):
         auth_result = auth(username=username, password=password)
 
         if not auth_result['state']:
-            return Response({'message': auth_result['message']}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         
         user = auth_result.get('user')
         teacher = self.getTeacher(user.id)
@@ -86,7 +86,7 @@ class PresenceView(APIView):
                                                          course__teacher_id=teacher_id)
         
         if not timetable_group_today:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         
         for course in timetable_group_today:
             if current_time >= course.time_begin and current_time <= course.time_ending:
