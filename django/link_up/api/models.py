@@ -1,6 +1,5 @@
 from django.db import models
 
-
 from absences.models import Timetable
 from absences.models import Student
 
