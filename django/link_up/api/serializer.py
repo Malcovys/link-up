@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from absences.models import Student
+from absences.models import Teacher
 
 
 class StudentSerialiser(ModelSerializer):
@@ -8,3 +9,9 @@ class StudentSerialiser(ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'name', 'group_id']
+
+class TeacherSerialiser(ModelSerializer):
+
+    class Meta:
+        model = Teacher
+        fields = ['id']
