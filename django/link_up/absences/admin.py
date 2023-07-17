@@ -26,8 +26,11 @@ class AbsenceAdmin(admin.ModelAdmin):
     def getDate(self, Timetable):
         return Timetable.course.date
 
+class ModuleAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name')
+
 admin.site.register(Teacher, TeacherAdmin)
-admin.site.register(Module)
+admin.site.register(Module, ModuleAdmin)
 admin.site.register(Group)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(TeacherModule, TeacherModuleAdmin)

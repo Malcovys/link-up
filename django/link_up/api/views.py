@@ -5,11 +5,15 @@ from django.contrib.auth.models import User
 
 from api.serializer import StudentSerialiser
 from api.serializer import TeacherSerialiser
+from api.serializer import TestSerialiser
+from api.models import StudentPresence
 
 from absences.models import Student
 from absences.models import Teacher
+from absences.models import Timetable
 
 import json
+from datetime import datetime, date
 
 def auth(username, password):
     try:
@@ -45,6 +49,7 @@ class StudentAuthView(APIView):
         return Response(serialiser.data)
 
 class TeacherAuthView(APIView):
+    serialiser_class = TestSerialiser
 
     def getTeacher(self,user_id):
         teacher = Teacher.objects.get(user_id=user_id)
@@ -65,3 +70,28 @@ class TeacherAuthView(APIView):
 
         serialiser = TeacherSerialiser(teacher)
         return Response(serialiser.data)
+
+
+class PresenceView(APIView):
+    
+    def get(self, request, *args, **kwargs):
+        json_data = json.loads(request.body)
+        student_id = json_data.get('student_id')
+        teacher_id = json_data.get('teacher_id')
+        group_id = json.get('group_id')
+
+        current_time = datetime.now().time()
+        timetable_group_today = Timetable.objects.filter(date=date.today(), 
+                                                         course__group_id=group_id,
+                                                         course__teacher_id=teacher_id)
+        
+        if not timetable_group_today:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        for course in timetable_group_today:
+            if current_time >= course.time_begin and current_time <= course.time_ending:
+                present = StudentPresence(course_id=course.id, student_id=student_id)
+                present.save()
+                return Response(status=status.HTTP_201_CREATED)
+            
+        return Response(status=status.HTTP_404_NOT_FOUND)

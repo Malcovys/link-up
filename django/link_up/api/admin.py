@@ -8,4 +8,4 @@ class StudentPresenceAdmin(admin.ModelAdmin):
     def getDate(self, Timetable):
         return Timetable.course.date
     
-admin.site.register(StudentPresence)
+admin.site.register(StudentPresence, StudentPresenceAdmin)
